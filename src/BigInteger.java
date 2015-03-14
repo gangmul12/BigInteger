@@ -5,13 +5,13 @@ import java.util.regex.Pattern;
 
 public class BigInteger
 {
-	public static final String	QUIT_COMMAND				= "quit";
-	public static final String	MSG_INVALID_INPUT		= "입력이 잘못되었습니다.";
-	public static final Pattern	EXPRESSION_PATTERN	= Pattern
-																											.compile("^\\s*[-+]?[0-9]+\\s*[+*-]\\s*[-+]?[0-9]+\\s*$");
+	public static final String QUIT_COMMAND = "quit";
+	public static final String MSG_INVALID_INPUT = "입력이 잘못되었습니다.";
+	public static final Pattern EXPRESSION_PATTERN = Pattern
+			.compile("^\\s*[-+]?[0-9]+\\s*[+*-]\\s*[-+]?[0-9]+\\s*$");
 	// BigInteger member state
-	private int[]								data;
-	private int									length;
+	private int[] data;
+	private int length;
 
 	// BinInteger Constructor
 	public BigInteger(int i)
@@ -142,7 +142,8 @@ public class BigInteger
 					try
 					{
 						done = processInput(input);
-					} catch (IllegalArgumentException e)
+					}
+					catch (IllegalArgumentException e)
 					{
 						System.err.println(MSG_INVALID_INPUT);
 					}
@@ -157,7 +158,8 @@ public class BigInteger
 		if (quit)
 		{
 			return true;
-		} else
+		}
+		else
 		{
 			BigInteger result = evaluate(input);
 			System.out.println(result.toString());
@@ -224,7 +226,8 @@ public class BigInteger
 				result++;
 				i = i / 10;
 				continue;
-			} else
+			}
+			else
 				break;
 		}
 		return result;
