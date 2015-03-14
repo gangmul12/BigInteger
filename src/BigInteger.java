@@ -8,21 +8,29 @@ public class BigInteger
     public static final String QUIT_COMMAND = "quit";
     public static final String MSG_INVALID_INPUT = "입력이 잘못되었습니다.";
 
-    // implement this
+    
     public static final Pattern EXPRESSION_PATTERN = Pattern.compile("^\\s*[-+]?[0-9]+\\s*[+*-]\\s*[-+]?[0-9]+\\s*$");
+    
+    // BinInteger Constructor
     public BigInteger(int i)
     {
 
 
     }
+    
+    
     public BigInteger(int[] num1)
     {
 
     }
+    
+    
     public BigInteger(String s)
     {
 
     }
+    
+    //BigInteger Method
     public BigInteger add(BigInteger big)
     {
 
@@ -30,6 +38,7 @@ public class BigInteger
 
     }
 
+    
     public BigInteger subtract(BigInteger big)
     {
 
@@ -38,6 +47,8 @@ public class BigInteger
  
 
     }
+    
+    
     public BigInteger multiply(BigInteger big)
     {
 
@@ -45,6 +56,7 @@ public class BigInteger
 
     }
     //@Override
+    
     public String toString()
     {
 
@@ -52,15 +64,15 @@ public class BigInteger
 
     }
     
-    
 
     static BigInteger evaluate(String input) throws IllegalArgumentException
     {
-        if(!isValid(input))
+        //Check validity
+    	if(!isValid(input))
         	throw new IllegalArgumentException();
-        
+        //parse input and store parsed data at lhs, operator,rhs
         String lhs = parseOperand(input);
-        input = deleteFirstAndTrim(input, lhs);
+        input = deleteFirstAndTrim(input, lhs);//if we parsed lhs, delete lhs from input
         
         char operator = input.charAt(0);
         input = deleteFirstAndTrim(input, "[-+*]");
@@ -68,15 +80,15 @@ public class BigInteger
         String rhs = parseOperand(input);
         
         
-        
+        //make bigInteger Instance by parsed String and evaluate
         BigInteger num1 = new BigInteger(lhs);
         BigInteger num2 = new BigInteger(rhs);
         BigInteger result = evaluateResult(num1, operator, num2);
         
         return result;
-        
-    }
+     }
 
+    
     public static void main(String[] args) throws Exception
     {
         try (InputStreamReader isr = new InputStreamReader(System.in))
@@ -101,6 +113,8 @@ public class BigInteger
             }
         }
     }
+        
+    
     static boolean processInput(String input) throws IllegalArgumentException
     {
         boolean quit = isQuitCmd(input);
@@ -116,24 +130,30 @@ public class BigInteger
         }
     }
 
+    
     static boolean isQuitCmd(String input)
     {
         return input.equalsIgnoreCase(QUIT_COMMAND);
 
     }
     
-    static boolean isValid(String input)//check validity
+  //check validity
+    static boolean isValid(String input)
     {
     	Matcher m = EXPRESSION_PATTERN.matcher(input);
     	return m.find();
     }
+    
+    //get rid of the first 'delete' from the target and trim.
     static String deleteFirstAndTrim(String target, String delete)
 	{
 		target=target.replaceFirst(delete, "");
 		target=target.trim();
 		return target;
 	}
-    static String parseOperand(String input)// Operand parser
+    
+    //Operand Parser
+    static String parseOperand(String input)
     {
     	
     	Pattern p = Pattern.compile("[+-]?[0-9]+");
@@ -142,6 +162,8 @@ public class BigInteger
     	
     	return m.group();
     }
+    
+    //Selection Method
     static BigInteger evaluateResult(BigInteger lhs, char op, BigInteger rhs) throws IllegalArgumentException
     {
     	switch(op)
