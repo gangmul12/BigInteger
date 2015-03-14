@@ -147,6 +147,8 @@ public class BigInteger
     //get rid of the first 'delete' from the target and trim.
     static String deleteFirstAndTrim(String target, String delete)
 	{
+    	if(delete.charAt(0)=='+')
+    		delete="\\"+delete; //for regex started with +
 		target=target.replaceFirst(delete, "");
 		target=target.trim();
 		return target;
