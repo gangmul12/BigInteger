@@ -66,25 +66,46 @@ public class BigInteger
     }
     
     //BigInteger Method
+    
     public BigInteger add(BigInteger big)
     {
-    	//FIXME 
-    	return this;
-
+    	int[] resultData = new int[((this.length>big.length)? this.length : big.length)+1];
+    	//add digit by digit
+    	for(int i = 0 ; i<this.length ; i++)
+    		resultData[i] = this.data[i];
+    	for(int i = 0 ; i<big.length; i++)
+    		resultData[i] += big.data[i];
+    	//dispose CarryIn
+    	for(int i = 0 ; i<resultData.length; i++)
+    	{
+    		resultData[i+1]=resultData[i]/10;
+    		resultData[i]%=10;
+    	}
+    	resultData = deleteZero(resultData);
+    	
+    	int sign = (resultData[resultData.length-1]>0 ? 1 : -1);
+    	
+    	for(int i = resultData.length-2 ; i>=0; i--)
+    	{
+    		if(resultData[i]*sign<0)
+    		{
+    			resultData[i+1]-=sign;
+    			resultData[i]+=sign*10;
+    		}
+    	}
+    	
+    	resultData = deleteZero(resultData);
+    	
+    	
+    	return new BigInteger(resultData);
  
-
     }
 
     
     public BigInteger subtract(BigInteger big)
     {
-    	//FIXME
-    	return this;
-
-    	
-
- 
-
+    		
+    	return this.add(big.multiply(new BigInteger(-1)));
     }
     
     
@@ -269,7 +290,21 @@ public class BigInteger
     	return input;
     	
     	
-    }	
+    }
+    static int[] deleteZero(int[] input)
+    {
+    	int count = 0;
+    	int index = input.length-1;
+    	while(input[index]==0&&index!=0)
+    	{
+    		count++;
+    		index--;
+    	}
+    	int[] result = new int[input.length-count];
+    	System.arraycopy(input, 0, result, 0, result.length);
+    	
+    	return result;
+    }
     	
     	
     
