@@ -51,21 +51,30 @@ public class BigInteger
  
 
     }
+    
+    
 
     static BigInteger evaluate(String input) throws IllegalArgumentException
     {
-        Matcher m = EXPRESSION_PATTERN.matcher(input);
-
-        if(!m.find())
-
+        if(!isValid(input))
         	throw new IllegalArgumentException();
-        // parse input
-        // using regex is allowed
-        // One possible implementation
-        // BigInteger num1 = new BigInteger(arg1);
-        // BigInteger num2 = new BigInteger(arg2);
-        // BigInteger result = num1.add(num2);
-        // return result;
+        
+        String lhs = parseOperand(input);
+        input = deleteFirstAndTrim(input, lhs);
+        
+        char operator = input.charAt(0);
+        input = deleteFirstAndTrim(input, "[-+*]");
+        
+        String rhs = parseOperand(input);
+        
+        
+        
+        BigInteger num1 = new BigInteger(lhs);
+        BigInteger num2 = new BigInteger(rhs);
+        BigInteger result = evaluateResult(num1, operator, num2);
+        
+        return result;
+        
     }
 
     public static void main(String[] args) throws Exception
@@ -112,6 +121,48 @@ public class BigInteger
         return input.equalsIgnoreCase(QUIT_COMMAND);
 
     }
+    
+    static boolean isValid(String input)//check validity
+    {
+    	Matcher m = EXPRESSION_PATTERN.matcher(input);
+    	return m.find();
+    }
+    static String deleteFirstAndTrim(String target, String delete)
+	{
+		target=target.replaceFirst(delete, "");
+		target=target.trim();
+		return target;
+	}
+    static String parseOperand(String input)// Operand parser
+    {
+    	
+    	Pattern p = Pattern.compile("[+-]?[0-9]+");
+    	Matcher m = p.matcher(input);
+    	m.find();
+    	
+    	return m.group();
+    }
+    static BigInteger evaluateResult(BigInteger lhs, char op, BigInteger rhs) throws IllegalArgumentException
+    {
+    	switch(op)
+        {
+        case '+':
+        	return lhs.add(rhs);
+        	
+        case '-':
+        	return lhs.subtract(rhs);
+        	       
+        case '*':
+        	return lhs.multiply(rhs);
+        default:
+        	throw new IllegalArgumentException();
+        }
+    }
+    	
+    	
+    	
+    	
+    
 
 }
 
