@@ -70,30 +70,21 @@ public class BigInteger
     public BigInteger add(BigInteger big)
     {
     	int[] resultData = new int[((this.length>big.length)? this.length : big.length)+1];
+    	
     	//add digit by digit
     	for(int i = 0 ; i<this.length ; i++)
     		resultData[i] = this.data[i];
     	for(int i = 0 ; i<big.length; i++)
     		resultData[i] += big.data[i];
-    	//dispose CarryIn
-    	for(int i = 0 ; i<resultData.length; i++)
-    	{
-    		resultData[i+1]=resultData[i]/10;
-    		resultData[i]%=10;
-    	}
+    	
+    	
+    	//handling CarryIn
+    	resultData = handlingCarryIn(resultData);
     	resultData = deleteZero(resultData);
     	
-    	int sign = (resultData[resultData.length-1]>0 ? 1 : -1);
     	
-    	for(int i = resultData.length-2 ; i>=0; i--)
-    	{
-    		if(resultData[i]*sign<0)
-    		{
-    			resultData[i+1]-=sign;
-    			resultData[i]+=sign*10;
-    		}
-    	}
-    	
+    	//digit sign correction
+    	resultData = correctDigitSign(resultData);
     	resultData = deleteZero(resultData);
     	
     	
@@ -111,25 +102,36 @@ public class BigInteger
     
     public BigInteger multiply(BigInteger big)
     {
-    	//FIXME
-    	return this;
-
- 
-
-    }
-    //@Override
+    	int[] resultData = new int[this.length+big.length];
+    	
+    	//multiply 
+    	for(int i = 0 ; i<big.length; i++)
+    	{
+    		for(int j = 0; j<this.length; j++)
+    		{
+    			resultData[i+j]+=this.data[j] * big.data[i];
+    			
+    		}
+    	}
+    	
+    	//Handling CarryIn
+    	resultData = handlingCarryIn(resultData);
+    	resultData = deleteZero(resultData);
+    	
+    	return new BigInteger(resultData);
     
+    }
+
+    //@Override
     public String toString()
     {
-    	
     	String result = "";
     	result = result + data[length-1];
     	for(int i = 1 ; i < length ; i++)
     		result = result + Math.abs(data[length-1-i]);
+    	
     	return result;
-
- 
-
+    
     }
     
 
@@ -154,7 +156,8 @@ public class BigInteger
         BigInteger result = evaluateResult(num1, operator, num2);
         
         return result;
-     }
+    
+    }
 
     
     public static void main(String[] args) throws Exception
@@ -195,6 +198,7 @@ public class BigInteger
             BigInteger result = evaluate(input);
             System.out.println(result.toString());
             return false;
+        
         }
     }
 
@@ -210,6 +214,7 @@ public class BigInteger
     {
     	Matcher m = EXPRESSION_PATTERN.matcher(input);
     	return m.find();
+    
     }
     
     //get rid of the first 'delete' from the target and trim.
@@ -220,6 +225,7 @@ public class BigInteger
 		target=target.replaceFirst(delete, "");
 		target=target.trim();
 		return target;
+	
 	}
     
     //Operand Parser
@@ -231,6 +237,7 @@ public class BigInteger
     	m.find();
     	
     	return m.group();
+    
     }
     
     //Selection Method
@@ -267,11 +274,13 @@ public class BigInteger
     		else break;
     	}
     	return result;
+    
     }
     
     static boolean isSign(char c)
     {
     	return (c=='+'||c=='-');
+    
     }
     
     //delete meaningless Zero
@@ -289,8 +298,9 @@ public class BigInteger
     	}
     	return input;
     	
-    	
     }
+
+    
     static int[] deleteZero(int[] input)
     {
     	int count = 0;
@@ -304,10 +314,40 @@ public class BigInteger
     	System.arraycopy(input, 0, result, 0, result.length);
     	
     	return result;
-    }
-    	
-    	
     
-
+    }
+    
+    
+    static int[] handlingCarryIn(int[] input)
+    {
+    	for(int i = 0 ; i<input.length-1; i++)
+    	{
+    		if(input[i]/10!=0)
+    		{
+    			input[i+1]+=input[i]/10;
+    			input[i]%=10;
+    		}
+    	}
+    	return input;
+    
+    }
+    
+    
+    static int[] correctDigitSign(int[] input)
+    {
+    	int sign = (input[input.length-1]>0 ? 1 : -1);
+    	
+    	for(int i = input.length-2 ; i>=0; i--)
+    	{
+    		if(input[i]*sign<0)
+    		{
+    			input[i+1]-=sign;
+    			input[i]+=sign*10;
+    		}
+    	}
+    	return input;
+    
+    }
+    
 }
 
