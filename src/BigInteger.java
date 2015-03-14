@@ -10,29 +10,66 @@ public class BigInteger
 
     
     public static final Pattern EXPRESSION_PATTERN = Pattern.compile("^\\s*[-+]?[0-9]+\\s*[+*-]\\s*[-+]?[0-9]+\\s*$");
+    //BigInteger member state
+    private int[] data;
+    private int length;
+    
     
     // BinInteger Constructor
     public BigInteger(int i)
     {
-
-
+    	length=lengthOf(i);
+    	data = new int[length];
+    	for(int j=0; j<length; j++)
+    	{
+    		data[j]=i%10;
+    		i/=10;
+    	}
     }
     
     
     public BigInteger(int[] num1)
     {
-
+    	length=num1.length;
+    	data = new int[length];
+    	System.arraycopy(num1, 0, data, 0, length);
     }
     
     
     public BigInteger(String s)
     {
+    	int sign = 1;
+    	switch(s.charAt(0))
+    	{
+    	case '-':
+    		sign = -1;
+    	case '+':
+    		length = s.length()-1;
+    		data = new int[length];
+    		for(int i = 0; i < length ; i++)
+    		{
+    			data[i] = sign * Character.getNumericValue(s.charAt(length-i));
+    		}
+    		break;
+    	default:
+    		length = s.length();
+    		data = new int[length];
+    		for(int i =0 ; i<length; i++)
+    		{
+    			data[i] = Character.getNumericValue(s.charAt(length-i-1));
+    		}
+    		
+    	}
+    	
+    			
 
     }
     
     //BigInteger Method
     public BigInteger add(BigInteger big)
     {
+    	//FIXME 
+    	return this;
 
  
 
@@ -41,6 +78,8 @@ public class BigInteger
     
     public BigInteger subtract(BigInteger big)
     {
+    	//FIXME
+    	return this;
 
     	
 
@@ -51,6 +90,8 @@ public class BigInteger
     
     public BigInteger multiply(BigInteger big)
     {
+    	//FIXME
+    	return this;
 
  
 
@@ -59,6 +100,12 @@ public class BigInteger
     
     public String toString()
     {
+    	
+    	String result = "";
+    	result = result + data[length-1];
+    	for(int i = 1 ; i < length ; i++)
+    		result = result + Math.abs(data[length-1-i]);
+    	return result;
 
  
 
@@ -73,12 +120,12 @@ public class BigInteger
         //parse input and store parsed data at lhs, operator,rhs
         String lhs = parseOperand(input);
         input = deleteFirstAndTrim(input, lhs);//if we parsed lhs, delete lhs from input
-        
+        lhs = deleteZero(lhs);
         char operator = input.charAt(0);
         input = deleteFirstAndTrim(input, "[-+*]");
         
         String rhs = parseOperand(input);
-        
+        rhs = deleteZero(rhs);
         
         //make bigInteger Instance by parsed String and evaluate
         BigInteger num1 = new BigInteger(lhs);
@@ -183,7 +230,46 @@ public class BigInteger
         }
     }
     	
+    
+    static int lengthOf(int i)
+    {
+    	int result = 1;
+    	boolean done = false;
+    	while(!done)
+    	{
+    		if(i/10!=0)
+    		{
+    			result++;
+    			i=i/10;
+    			continue;
+    		}
+    		else break;
+    	}
+    	return result;
+    }
+    
+    static boolean isSign(char c)
+    {
+    	return (c=='+'||c=='-');
+    }
+    
+    //delete meaningless Zero
+    static String deleteZero(String input)
+    {
+    	int index = 0;
+    	if(isSign(input.charAt(0)))
+    		index++;
     	
+    	while(input.charAt(index)=='0'&&index!=input.length()-1)
+    	{
+    		
+    		input=input.replaceFirst("0", "");
+    		
+    	}
+    	return input;
+    	
+    	
+    }	
     	
     	
     
